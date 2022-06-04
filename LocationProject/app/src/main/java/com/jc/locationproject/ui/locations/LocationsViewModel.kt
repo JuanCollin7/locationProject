@@ -7,6 +7,7 @@ import androidx.lifecycle.*
 import com.jc.locationproject.database.AppDatabase
 import com.jc.locationproject.database.LocationLog
 import kotlinx.coroutines.launch
+import java.util.*
 
 class LocationsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -16,7 +17,6 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
     val locations: LiveData<List<LocationLog>> = _locations
 
     init {
-        //fillDatabase()
         viewModelScope.launch {
             database.locationLogDao().deleteAll()
         }
@@ -31,15 +31,10 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun newLocation(location: Location) {
         viewModelScope.launch {
-            database.locationLogDao().insertAll(LocationLog(0L, 0, location.latitude, location.longitude, 0L))
-            _locations.postValue(database.locationLogDao().getAll())
-        }
-    }
+            val timestamp = Calendar.getInstance().time.time
 
-    private fun fillDatabase() {
-        viewModelScope.launch {
-            database.locationLogDao().insertAll(LocationLog(0L, 0, 37.445772, -122.149578, 0L),
-                                                LocationLog(0L, 0, 3.3, 3.3, 0L))
+            database.locationLogDao().insertAll(LocationLog(0L, 0, location.latitude, location.longitude, timestamp))
+            _locations.postValue(database.locationLogDao().getAll())
         }
     }
 }

@@ -51,7 +51,7 @@ class LocationService: Service() {
             return
         }
 
-        deviceManager?.let { locationManager ->
+        deviceManager.let { locationManager ->
             locationManager.requestLocationUpdates(
                 android.location.LocationManager.GPS_PROVIDER, 5000, 3f, LocationListener {
                     fireNotification(it)

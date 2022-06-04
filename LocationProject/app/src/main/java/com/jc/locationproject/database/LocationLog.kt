@@ -9,6 +9,6 @@ data class LocationLog(
     var uid: Long = 0,
     var userId: Int? = null,
     var lat: Double? = null,
-    var long: Double? = null,
+    var lon: Double? = null,
     var timestamp: Long? = null
 )

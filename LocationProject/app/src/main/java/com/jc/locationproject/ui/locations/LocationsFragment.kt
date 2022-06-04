@@ -54,7 +54,7 @@ class LocationsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requestLocationPermission()
+        requestBackgroundLocationPermission()
 
         startLocationBroadcast()
 
@@ -75,12 +75,11 @@ class LocationsFragment : Fragment() {
     }
 
     private fun onLocationReceived(location: Location) {
-        Log.v("Location", location.toString())
         viewModel.newLocation(location)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun requestLocationPermission() {
+    fun requestBackgroundLocationPermission() {
         val locationPermissionRequest = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
@@ -98,9 +97,8 @@ class LocationsFragment : Fragment() {
             }
             }
         }
+
         locationPermissionRequest.launch(arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_BACKGROUND_LOCATION))
     }
 
