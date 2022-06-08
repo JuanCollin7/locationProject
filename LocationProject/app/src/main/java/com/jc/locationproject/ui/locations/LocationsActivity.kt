@@ -4,14 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.jc.locationproject.R
 
 class LocationsActivity : AppCompatActivity() {
-
-    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,9 +16,6 @@ class LocationsActivity : AppCompatActivity() {
                 .replace(R.id.container, LocationsFragment.newInstance())
                 .commitNow()
         }
-
-        database = Firebase.database.reference
-        database.child("users").child("UID07").setValue("Juan")
     }
 
     companion object {

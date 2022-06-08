@@ -4,12 +4,17 @@ import android.app.Application
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.jc.locationproject.database.AppDatabase
 import com.jc.locationproject.database.LocationLog
 import kotlinx.coroutines.launch
 import java.util.*
 
 class LocationsViewModel(application: Application) : AndroidViewModel(application) {
+
+    private var firebaseDb: DatabaseReference = Firebase.database.reference
 
     private val database by lazy { AppDatabase.getDatabase(application) }
 
@@ -30,11 +35,17 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun newLocation(location: Location) {
-        viewModelScope.launch {
-            val timestamp = Calendar.getInstance().time.time
 
-            database.locationLogDao().insertAll(LocationLog(0L, 0, location.latitude, location.longitude, timestamp))
+        val userId = 7
+        val timestamp = Calendar.getInstance().time.time
+        val log = LocationLog(timestamp, userId, location.latitude, location.longitude, timestamp)
+
+        viewModelScope.launch {
+            database.locationLogDao().insertAll(log)
             _locations.postValue(database.locationLogDao().getAll())
         }
+
+
+        firebaseDb.child("users").child(userId.toString()).child("locations").child(timestamp.toString()).setValue(log)
     }
 }
