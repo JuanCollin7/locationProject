@@ -1,23 +1,17 @@
 package com.jc.locationproject.ui.locations
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.location.Location
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.jc.locationproject.LocationBroadcastReceiver
-import com.jc.locationproject.LocationService
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.jc.locationproject.R
-import com.jc.locationproject.database.AppDatabase
 
 class LocationsActivity : AppCompatActivity() {
+
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +21,9 @@ class LocationsActivity : AppCompatActivity() {
                 .replace(R.id.container, LocationsFragment.newInstance())
                 .commitNow()
         }
+
+        database = Firebase.database.reference
+        database.child("users").child("UID07").setValue("Juan")
     }
 
     companion object {

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "513672968440",
+    "firebase_url": "https://locationproject-6d977-default-rtdb.firebaseio.com",
+    "project_id": "locationproject-6d977",
+    "storage_bucket": "locationproject-6d977.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:513672968440:android:f2484e16752f379da2e30d",
+        "android_client_info": {
+          "package_name": "com.jc.locationproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "513672968440-emb3pn94221lte66307uoaimvbrjmenb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR5AaQswSTjHL5wkljNd3DhwH2xu-O1Bg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "513672968440-emb3pn94221lte66307uoaimvbrjmenb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
