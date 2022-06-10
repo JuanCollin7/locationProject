@@ -45,7 +45,6 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
             _locations.postValue(database.locationLogDao().getAll())
         }
 
-
         firebaseDb.child("users").child(userId.toString()).child("locations").child(timestamp.toString()).setValue(log)
     }
 }
