@@ -1,11 +1,10 @@
-package com.jc.locationproject.ui.admin
+package com.jc.locationproject.ui.admin.users
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.jc.locationproject.R
-import com.jc.locationproject.ui.locations.LocationsActivity
 
 class UsersActivity : AppCompatActivity() {
 

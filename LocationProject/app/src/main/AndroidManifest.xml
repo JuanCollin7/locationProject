@@ -28,7 +28,8 @@
         </intent-filter>
         </activity>
         <activity android:name=".ui.locations.LocationsActivity"/>
-        <activity android:name=".ui.admin.UsersActivity"/>
+        <activity android:name=".ui.admin.users.UsersActivity"/>
+        <activity android:name=".ui.admin.userLocations.UserLocationsActivity"/>
 
         <service
             android:name=".services.LocationService"

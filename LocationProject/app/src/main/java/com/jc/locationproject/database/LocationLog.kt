@@ -10,5 +10,6 @@ data class LocationLog(
     var userId: Int? = null,
     var lat: Double? = null,
     var lon: Double? = null,
-    var timestamp: Long? = null
+    var timestamp: Long? = null,
+    var isSynced: Boolean? = null
 )

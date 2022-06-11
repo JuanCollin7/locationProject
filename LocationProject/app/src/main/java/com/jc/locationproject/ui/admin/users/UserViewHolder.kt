@@ -1,10 +1,11 @@
-package com.jc.locationproject.ui.admin
+package com.jc.locationproject.ui.admin.users
 
 import android.annotation.SuppressLint
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.jc.locationproject.R
+import com.jc.locationproject.core.ItemClickListener
 import com.jc.locationproject.models.User
 import java.text.SimpleDateFormat
 import java.util.*
@@ -17,12 +18,16 @@ class UserViewHolder(private val itemView: CardView): RecyclerView.ViewHolder(it
     private val dateTextView: TextView = itemView.findViewById(R.id.dateTextView)
 
     @SuppressLint("SetTextI18n")
-    fun setData(user: User) {
+    fun setData(user: User, itemInterface: ItemClickListener<User>) {
         nameTextView.text = user.name
         latTextView.text = "Lat: " + user.lastLat
         lonTextView.text = "Lon: " + user.lastLat
         dispTextView.text = "Displacement: " + user.displacement
         dateTextView.text = "Last Updated on: " + getFormattedDate(user.lastTimestamp)
+
+        itemView.setOnClickListener {
+            itemInterface.onItemClicked(user)
+        }
     }
 
     @SuppressLint("SimpleDateFormat")

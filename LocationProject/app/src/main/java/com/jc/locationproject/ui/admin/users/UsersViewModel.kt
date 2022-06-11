@@ -1,4 +1,4 @@
-package com.jc.locationproject.ui.admin
+package com.jc.locationproject.ui.admin.users
 
 import android.app.Application
 import android.location.Location
