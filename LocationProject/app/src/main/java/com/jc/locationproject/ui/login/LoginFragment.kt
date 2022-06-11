@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.jc.locationproject.database.AppDatabase
 import com.jc.locationproject.databinding.FragmentLoginBinding
+import com.jc.locationproject.ui.admin.UsersActivity
 import com.jc.locationproject.ui.locations.LocationsActivity
 
 class LoginFragment : Fragment() {
@@ -88,7 +89,7 @@ class LoginFragment : Fragment() {
 
     private fun didLogin(isAdmin: Boolean) {
         if (isAdmin) {
-            //TODO: Go to admin page
+            startActivity(UsersActivity.getInstance(requireContext()))
         } else {
             startActivity(LocationsActivity.getInstance(requireContext()))
         }

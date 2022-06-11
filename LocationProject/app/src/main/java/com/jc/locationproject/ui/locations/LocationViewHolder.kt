@@ -10,8 +10,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class LocationViewHolder(private val itemView: CardView): RecyclerView.ViewHolder(itemView) {
-    private val firstTextView: TextView = itemView.findViewById(R.id.firstTextView)
-    private val secondTextView: TextView = itemView.findViewById(R.id.secodTextView)
+    private val firstTextView: TextView = itemView.findViewById(R.id.nameTextView)
+    private val secondTextView: TextView = itemView.findViewById(R.id.latTextView)
 
     fun setData(location: LocationLog) {
         firstTextView.text = location.lat.toString() + " | " + location.lon.toString()
