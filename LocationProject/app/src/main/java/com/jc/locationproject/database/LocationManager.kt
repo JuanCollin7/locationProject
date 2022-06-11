@@ -48,10 +48,10 @@ class LocationManager(application: Application) {
             0.0,
             0.0)
 
-        previousLog.let {
-            newLog.displacement = 0.0
-            newLog.velocity = 0.0
-            newLog.interval = 0.0
+        previousLog?.let {
+            newLog.displacement = getDistance(it, location)
+            newLog.velocity = getVelocity(it, location)
+            newLog.interval = getInterval(it, location)
         }
 
         database.locationLogDao().insertAll(newLog)
@@ -67,19 +67,40 @@ class LocationManager(application: Application) {
 
     private fun shouldSaveLocation(locationLog: LocationLog, location: Location): Boolean {
         val distanceInMeters = getDistance(locationLog, location)
+
         return distanceInMeters >= LocationManager.MINIMUM_DISTANCE
     }
 
-    private fun getDistance(locationLog: LocationLog, location: Location): Float {
+    // Get the distance in meters between log and location
+    private fun getDistance(locationLog: LocationLog, location: Location): Double {
         val locationFromLog = Location("")
         locationFromLog.latitude = locationLog.lat ?: 0.0
         locationFromLog.longitude = locationLog.lon ?: 0.0
 
-        return location.distanceTo(locationFromLog)
+        return location.distanceTo(locationFromLog).toDouble()
+    }
+
+    // Get the interval in seconds between log and location
+    private fun getInterval(locationLog: LocationLog, location: Location): Double {
+        locationLog.timestamp?.let {
+            val diff = location.time - it
+            val minutes = diff.toDouble() / 1000.0
+            return minutes
+        }
+
+        return 0.0
+    }
+
+    // Get the velocity in m/s between log and location
+    private fun getVelocity(locationLog: LocationLog, location: Location): Double {
+        val minutes = getInterval(locationLog, location)
+        val distance = getDistance(locationLog, location)
+
+        return distance / minutes
     }
 
     companion object {
         // Minimum distance in meters to save new location
-        internal const val MINIMUM_DISTANCE = 50.0
+        internal const val MINIMUM_DISTANCE = 200.0
     }
 }
