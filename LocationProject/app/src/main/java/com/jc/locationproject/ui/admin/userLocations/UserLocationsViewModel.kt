@@ -6,8 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jc.locationproject.database.LocationLog
 import com.jc.locationproject.models.User
+import com.jc.locationproject.services.FirebaseManager
 
 class UserLocationsViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val firebaseManager = FirebaseManager(application)
 
     private var _user: User? = null
 
@@ -22,7 +25,10 @@ class UserLocationsViewModel(application: Application) : AndroidViewModel(applic
     }
 
     private fun getLocations() {
-        _locations.value = listOf(LocationLog(0, 0, -45.0, 45.0, 102003, false))
-        // TODO: Call firebase to get user's locations
+        _user?.let {
+            firebaseManager.getUserLocations(it.id) { locations, _ ->
+                _locations.value = locations
+            }
+        }
     }
 }

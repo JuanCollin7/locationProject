@@ -23,12 +23,31 @@ class FirebaseManager(context: Context) {
 
         val update: MutableMap<String, Any> = HashMap()
         logs.forEach {
-            update["locations/" + userId + "/" + it.uid] = it
+            update["locations/${userId}/${it.uid}"] = it
         }
 
-        firebaseDb.updateChildren(update).addOnCompleteListener(OnCompleteListener<Void?> { task ->
-            if (task.isSuccessful) Log.v("FIREBASE", "Success!") else Log.v("FIREBASE", "Failure")
-        })
+        getUserCurrentDisplacement { userDisplacement, _ ->
+            val totalDisplacement = logs.sumOf { it.displacement ?: 0.0 } + userDisplacement
+
+            logs.sortedByDescending { it.timestamp }.first()?.let {
+                update["users/${userId}/lastTimestamp"] = it.timestamp ?: 0.0
+                update["users/${userId}/lastLat"] = it.lat ?: 0.0
+                update["users/${userId}/lastLon"] = it.lon ?: 0.0
+                update["users/${userId}/displacement"] = totalDisplacement
+            }
+
+            firebaseDb.updateChildren(update).addOnCompleteListener(OnCompleteListener<Void?> { task ->
+                if (task.isSuccessful) Log.v("FIREBASE", "Success!") else Log.v("FIREBASE", "Failure")
+            })
+        }
+    }
+
+    private fun getUserCurrentDisplacement(onResult: (userDisplacement: Double, error: String?) -> Unit) {
+        firebaseDb.child("users/${userId}/displacement").get().addOnSuccessListener { dataSnapshot ->
+            onResult(dataSnapshot.value.toString().toDouble() ?: 0.0, null)
+        }.addOnFailureListener{
+            onResult(0.0, it.message)
+        }
     }
 
     fun getUsers(onResult: (users: List<User>, error: String?) -> Unit) {
@@ -40,6 +59,20 @@ class FirebaseManager(context: Context) {
                 }
             }
             onResult(users, null)
+        }.addOnFailureListener{
+            onResult(emptyList(), it.message)
+        }
+    }
+
+    fun getUserLocations(userId: Int, onResult: (locations: List<LocationLog>, error: String?) -> Unit) {
+        val locations: MutableList<LocationLog> = mutableListOf<LocationLog>()
+        firebaseDb.child("locations/${userId}").get().addOnSuccessListener { dataSnapshot ->
+            for (postSnapshot in dataSnapshot.children) {
+                postSnapshot.getValue(LocationLog::class.java)?.let {
+                    locations.add(it)
+                }
+            }
+            onResult(locations, null)
         }.addOnFailureListener{
             onResult(emptyList(), it.message)
         }
