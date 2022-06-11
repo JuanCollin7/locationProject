@@ -11,5 +11,8 @@ data class LocationLog(
     var lat: Double? = null,
     var lon: Double? = null,
     var timestamp: Long? = null,
-    var isSynced: Boolean? = null
+    var isSynced: Boolean? = null,
+    var displacement: Double? = null,
+    var velocity: Double? = null,
+    var interval: Double? = null
 )

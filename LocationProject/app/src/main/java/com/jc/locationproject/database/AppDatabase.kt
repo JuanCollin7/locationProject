@@ -8,7 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@Database(entities = [LocationLog::class], version = 3)
+@Database(entities = [LocationLog::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun locationLogDao(): LocationLogDAO
 

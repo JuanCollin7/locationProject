@@ -13,6 +13,9 @@ interface LocationLogDAO {
     @Query("SELECT * FROM locationLog WHERE userId IN (:userId)")
     suspend fun loadAllByIds(userId: Int): List<LocationLog>
 
+    @Query("SELECT * FROM locationLog WHERE userId IN (:userId) ORDER BY timestamp DESC LIMIT 1")
+    suspend fun loadLatestById(userId: Int): LocationLog?
+
     @Insert
     suspend fun insertAll(vararg locationLog: LocationLog)
 
