@@ -7,11 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.jc.locationproject.database.AppDatabase
 import com.jc.locationproject.databinding.FragmentLoginBinding
+import com.jc.locationproject.ui.locations.LocationsActivity
 
 class LoginFragment : Fragment() {
 
@@ -37,6 +39,7 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         setupTextViews()
+        setupButton()
         setupObservers()
 
         return binding.root
@@ -61,12 +64,33 @@ class LoginFragment : Fragment() {
         }
     }
 
+    private fun setupButton() {
+        loginButton.setOnClickListener {
+            viewModel.login()
+        }
+    }
+
     private fun setupObservers() {
         viewModel.username.observe(viewLifecycleOwner) {
             loginButton.isEnabled = viewModel.mustEnableLoginButton()
         }
         viewModel.password.observe(viewLifecycleOwner) {
             loginButton.isEnabled = viewModel.mustEnableLoginButton()
+        }
+        viewModel.loginResponse.observe(viewLifecycleOwner) {
+            if (it.didLogin) {
+                didLogin(it.isAdmin)
+            } else {
+                Toast.makeText(requireContext(), it.errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun didLogin(isAdmin: Boolean) {
+        if (isAdmin) {
+            //TODO: Go to admin page
+        } else {
+            startActivity(LocationsActivity.getInstance(requireContext()))
         }
     }
 }
