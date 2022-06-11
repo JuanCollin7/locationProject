@@ -2,13 +2,13 @@ package com.jc.locationproject.ui.locations
 
 import android.app.Application
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jc.locationproject.database.AppDatabase
 import com.jc.locationproject.database.LocationLog
+import com.jc.locationproject.database.LocationManager
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -16,21 +16,21 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
 
     private var firebaseDb: DatabaseReference = Firebase.database.reference
 
-    private val database by lazy { AppDatabase.getDatabase(application) }
+    private val locationManager by lazy { LocationManager(application) }
 
     private val _locations = MutableLiveData<List<LocationLog>>()
     val locations: LiveData<List<LocationLog>> = _locations
 
     init {
         viewModelScope.launch {
-            database.locationLogDao().deleteAll()
+            locationManager.deleteAll()
         }
         getLocations()
     }
 
     private fun getLocations() {
         viewModelScope.launch {
-            _locations.postValue(database.locationLogDao().getAll())
+            _locations.postValue(locationManager.getAll())
         }
     }
 
@@ -41,8 +41,8 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
         val log = LocationLog(timestamp, userId, location.latitude, location.longitude, timestamp)
 
         viewModelScope.launch {
-            database.locationLogDao().insertAll(log)
-            _locations.postValue(database.locationLogDao().getAll())
+            locationManager.insert(userId, location)
+            _locations.postValue(locationManager.getAll())
         }
 
         firebaseDb.child("users").child(userId.toString()).child("locations").child(timestamp.toString()).setValue(log)
