@@ -1,8 +1,10 @@
-package com.jc.locationproject.database
+package com.jc.locationproject.services
 
 import android.app.Application
 import android.location.Location
 import android.util.Log
+import com.jc.locationproject.database.AppDatabase
+import com.jc.locationproject.database.LocationLog
 import java.util.*
 
 class LocationManager(application: Application) {
@@ -17,7 +19,7 @@ class LocationManager(application: Application) {
         return database.locationLogDao().loadAllByIds(userId)
     }
 
-    private suspend fun loadLatestById(userId: Int): LocationLog? {
+    suspend fun loadLatestById(userId: Int): LocationLog? {
         return database.locationLogDao().loadLatestById(userId)
     }
 
@@ -68,7 +70,7 @@ class LocationManager(application: Application) {
     private fun shouldSaveLocation(locationLog: LocationLog, location: Location): Boolean {
         val distanceInMeters = getDistance(locationLog, location)
 
-        return distanceInMeters >= LocationManager.MINIMUM_DISTANCE
+        return distanceInMeters >= MINIMUM_DISTANCE
     }
 
     // Get the distance in meters between log and location

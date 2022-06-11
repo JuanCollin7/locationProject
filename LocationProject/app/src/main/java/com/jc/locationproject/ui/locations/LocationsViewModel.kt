@@ -6,20 +6,25 @@ import androidx.lifecycle.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.jc.locationproject.database.AppDatabase
 import com.jc.locationproject.database.LocationLog
-import com.jc.locationproject.database.LocationManager
+import com.jc.locationproject.services.FirebaseManager
+import com.jc.locationproject.services.LocationManager
+import com.jc.locationproject.services.SharedPrefsManager.SharedPrefsKey
+import com.jc.locationproject.services.SharedPrefsManager.SharedPrefsManager
 import kotlinx.coroutines.launch
 import java.util.*
 
 class LocationsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var firebaseDb: DatabaseReference = Firebase.database.reference
+    private val firebaseManager = FirebaseManager(application)
+    private val locationManager = LocationManager(application)
+    private var sharedPrefsManager = SharedPrefsManager(application)
 
-    private val locationManager by lazy { LocationManager(application) }
+    private val userId by lazy { sharedPrefsManager.getIntValue(SharedPrefsKey.USER_ID) }
 
     private val _locations = MutableLiveData<List<LocationLog>>()
     val locations: LiveData<List<LocationLog>> = _locations
+
 
     init {
         viewModelScope.launch {
@@ -36,15 +41,14 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun newLocation(location: Location) {
 
-        val userId = 7
-        val timestamp = Calendar.getInstance().time.time
-        val log = LocationLog(timestamp, userId, location.latitude, location.longitude, timestamp)
-
         viewModelScope.launch {
             locationManager.insert(userId, location)
             _locations.postValue(locationManager.getAll())
-        }
 
-        firebaseDb.child("users").child(userId.toString()).child("locations").child(timestamp.toString()).setValue(log)
+            //TODO: Remove it after implementing job scheduler
+            locationManager.loadLatestById(userId)?.let {
+                firebaseManager.uploadLocations(listOf(it))
+            }
+        }
     }
 }
