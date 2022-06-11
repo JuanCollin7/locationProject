@@ -7,6 +7,10 @@
         <entry key="..\:/Users/juanl/AndroidStudioProjects/LocationProject/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/juanl/AndroidStudioProjects/LocationProject/app/src/main/res/layout/fragment_locations.xml" value="0.35104166666666664" />
         <entry key="..\:/Users/juanl/AndroidStudioProjects/LocationProject/app/src/main/res/layout/location_item_view.xml" value="0.35104166666666664" />
+        <entry key="..\:/Users/juanl/Documents/locationProject/LocationProject/app/src/main/res/layout/activity_locations.xml" value="0.2828125" />
+        <entry key="..\:/Users/juanl/Documents/locationProject/LocationProject/app/src/main/res/layout/activity_login.xml" value="0.2828125" />
+        <entry key="..\:/Users/juanl/Documents/locationProject/LocationProject/app/src/main/res/layout/fragment_locations.xml" value="0.1648148148148148" />
+        <entry key="..\:/Users/juanl/Documents/locationProject/LocationProject/app/src/main/res/layout/fragment_login.xml" value="0.2828125" />
       </map>
     </option>
   </component>
