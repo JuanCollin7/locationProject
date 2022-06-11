@@ -1,9 +1,6 @@
 package com.jc.locationproject.ui.login
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +8,8 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.jc.locationproject.database.AppDatabase
 import com.jc.locationproject.databinding.FragmentLoginBinding
+import com.jc.locationproject.ui.admin.users.UsersActivity
 import com.jc.locationproject.ui.locations.LocationsActivity
 
 class LoginFragment : Fragment() {
@@ -88,7 +85,7 @@ class LoginFragment : Fragment() {
 
     private fun didLogin(isAdmin: Boolean) {
         if (isAdmin) {
-            //TODO: Go to admin page
+            startActivity(UsersActivity.getInstance(requireContext()))
         } else {
             startActivity(LocationsActivity.getInstance(requireContext()))
         }
