@@ -4,4 +4,4 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class User(val id: Int, val name: String, val lastLat: Double, val lastLon: Double, val displacement: Double, val lastTimestamp: Long): Parcelable
+data class User(val id: Int = 0, val name: String = "", val lastLat: Double = 0.0, val lastLon: Double = 0.0, val displacement: Double = 0.0, val lastTimestamp: Long = 0): Parcelable

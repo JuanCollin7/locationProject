@@ -8,9 +8,12 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jc.locationproject.database.AppDatabase
 import com.jc.locationproject.models.User
+import com.jc.locationproject.services.FirebaseManager
 import kotlinx.coroutines.launch
 
 class UsersViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val firebaseManager = FirebaseManager(application)
 
     private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> = _users
@@ -20,6 +23,8 @@ class UsersViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun getUsers() {
-        _users.value = listOf(User(0, "Juan Collin", -45.0, 45.0, 20.0, 10230230))
+        firebaseManager.getUsers { users, _ ->
+            _users.value = users
+        }
     }
 }
