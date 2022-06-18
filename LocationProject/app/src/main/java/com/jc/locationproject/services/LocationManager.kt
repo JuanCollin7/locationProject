@@ -59,6 +59,11 @@ class LocationManager(application: Application) {
         database.locationLogDao().insertAll(newLog)
     }
 
+    suspend fun updateSyncedLogs(logs: List<LocationLog>) {
+        val ids = logs.map { it.uid }
+        database.locationLogDao().update(ids, true)
+    }
+
     suspend fun delete(locationLog: LocationLog) {
         database.locationLogDao().delete(locationLog)
     }

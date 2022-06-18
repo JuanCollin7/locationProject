@@ -2,6 +2,7 @@ package com.jc.locationproject.ui.locations
 
 import android.app.Application
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database

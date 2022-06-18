@@ -19,6 +19,9 @@ interface LocationLogDAO {
     @Insert
     suspend fun insertAll(vararg locationLog: LocationLog)
 
+    @Query("UPDATE locationLog SET isSynced=:isSynced WHERE uid IN (:ids)")
+    suspend fun update(ids: List<Long>, isSynced: Boolean)
+
     @Delete
     suspend fun delete(locationLog: LocationLog)
 
