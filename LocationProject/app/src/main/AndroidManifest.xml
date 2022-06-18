@@ -17,18 +17,22 @@
         android:theme="@style/Theme.LocationProject">
         <activity
             android:name=".MainActivity"
+        />
+
+        <activity android:name=".ui.login.LoginActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
-
         <activity android:name=".ui.locations.LocationsActivity"/>
+        <activity android:name=".ui.admin.users.UsersActivity"/>
+        <activity android:name=".ui.admin.userLocations.UserLocationsActivity"/>
 
         <service
-            android:name=".LocationService"
+            android:name=".services.LocationService"
             android:enabled="true"
             android:exported="false"/>
     </application>

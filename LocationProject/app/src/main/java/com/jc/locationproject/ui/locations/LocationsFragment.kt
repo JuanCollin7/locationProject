@@ -15,8 +15,8 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.jc.locationproject.LocationBroadcastReceiver
-import com.jc.locationproject.LocationService
+import com.jc.locationproject.services.LocationBroadcastReceiver
+import com.jc.locationproject.services.LocationService
 import com.jc.locationproject.databinding.FragmentLocationsBinding
 
 class LocationsFragment : Fragment() {

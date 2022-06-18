@@ -1,4 +1,4 @@
-package com.jc.locationproject
+package com.jc.locationproject.services
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -12,8 +12,8 @@ import android.os.*
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.android.gms.location.*
-import kotlinx.coroutines.*
+import com.jc.locationproject.BuildConfig
+import com.jc.locationproject.R
 
 
 class LocationService: Service() {
