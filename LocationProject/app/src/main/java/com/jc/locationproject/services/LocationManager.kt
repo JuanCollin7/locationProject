@@ -1,18 +1,23 @@
 package com.jc.locationproject.services
 
 import android.app.Application
+import android.content.Context
 import android.location.Location
 import android.util.Log
 import com.jc.locationproject.database.AppDatabase
 import com.jc.locationproject.database.LocationLog
 import java.util.*
 
-class LocationManager(application: Application) {
+class LocationManager(context: Context) {
 
-    private val database by lazy { AppDatabase.getDatabase(application) }
+    private val database by lazy { AppDatabase.getDatabase(context) }
 
     suspend fun getAll(): List<LocationLog> {
         return database.locationLogDao().getAll()
+    }
+
+    suspend fun getAllUnsynced(): List<LocationLog> {
+        return database.locationLogDao().getAllUnsynced()
     }
 
     suspend fun loadAllByIds(userId: Int): List<LocationLog> {

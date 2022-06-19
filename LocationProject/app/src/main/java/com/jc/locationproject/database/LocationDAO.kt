@@ -10,6 +10,9 @@ interface LocationLogDAO {
     @Query("SELECT * FROM locationLog")
     suspend fun getAll(): List<LocationLog>
 
+    @Query("SELECT * FROM locationLog WHERE isSynced = 0")
+    suspend fun getAllUnsynced(): List<LocationLog>
+
     @Query("SELECT * FROM locationLog WHERE userId IN (:userId)")
     suspend fun loadAllByIds(userId: Int): List<LocationLog>
 
