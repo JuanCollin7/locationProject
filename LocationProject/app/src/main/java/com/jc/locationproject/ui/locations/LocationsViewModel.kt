@@ -26,8 +26,7 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val _locations = MutableLiveData<List<LocationLog>>()
     val locations: LiveData<List<LocationLog>> = _locations
-
-
+    
     init {
         getLocations()
         startSyncWorker()

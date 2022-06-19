@@ -69,7 +69,7 @@ class LocationService: Service() {
 
     private fun generateNotification(): Notification {
 
-        val mainNotificationText = "TEXT"
+        val mainNotificationText = "Monitoring Location"
         val titleText = getString(R.string.app_name)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
