@@ -8,8 +8,8 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.jc.locationproject.database.LocationLog
-import com.jc.locationproject.services.LogSyncWorker
-import com.jc.locationproject.services.FirebaseManager
+import com.jc.locationproject.services.Workers.CleanerWorker
+import com.jc.locationproject.services.Workers.LogSyncWorker
 import com.jc.locationproject.services.LocationManager
 import com.jc.locationproject.services.SharedPrefsManager.SharedPrefsKey
 import com.jc.locationproject.services.SharedPrefsManager.SharedPrefsManager
@@ -31,6 +31,7 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
     init {
         getLocations()
         startSyncWorker()
+        startCleanerWorker()
     }
 
     private fun getLocations() {
@@ -41,7 +42,12 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
 
     private fun startSyncWorker() {
         val logBuilder = PeriodicWorkRequestBuilder<LogSyncWorker>(8, TimeUnit.HOURS).build()
-        workManager.enqueueUniquePeriodicWork("syncWorker", ExistingPeriodicWorkPolicy.KEEP, logBuilder);
+        workManager.enqueueUniquePeriodicWork("syncWorker", ExistingPeriodicWorkPolicy.KEEP, logBuilder)
+    }
+
+    private fun startCleanerWorker() {
+        val logBuilder = PeriodicWorkRequestBuilder<CleanerWorker>(7, TimeUnit.DAYS).build()
+        workManager.enqueueUniquePeriodicWork("cleanerWorker", ExistingPeriodicWorkPolicy.KEEP, logBuilder)
     }
 
     fun newLocation(location: Location) {

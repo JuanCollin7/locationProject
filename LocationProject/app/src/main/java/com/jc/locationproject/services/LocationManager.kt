@@ -87,6 +87,10 @@ class LocationManager(context: Context) {
         database.locationLogDao().deleteAll()
     }
 
+    suspend fun deleteAllSynced() {
+        return database.locationLogDao().deleteAllSynced()
+    }
+
     private fun shouldConsiderAsStopped(locationLog: LocationLog, location: Location): Boolean {
         val distanceInMeters = getDistance(locationLog, location)
         return distanceInMeters <= MAXIMUM_DISTANCE_TO_CONSIDER_AS_STOPPED

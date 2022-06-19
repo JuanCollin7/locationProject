@@ -33,4 +33,7 @@ interface LocationLogDAO {
 
     @Query("DELETE FROM locationLog")
     suspend fun deleteAll()
+
+    @Query("DELETE FROM locationLog WHERE isSynced = 1")
+    suspend fun deleteAllSynced()
 }
