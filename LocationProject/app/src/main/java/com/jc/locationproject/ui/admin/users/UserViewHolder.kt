@@ -21,7 +21,7 @@ class UserViewHolder(private val itemView: CardView): RecyclerView.ViewHolder(it
     fun setData(user: User, itemInterface: ItemClickListener<User>) {
         nameTextView.text = user.name
         latTextView.text = "Lat: " + user.lastLat
-        lonTextView.text = "Lon: " + user.lastLat
+        lonTextView.text = "Lon: " + user.lastLon
         dispTextView.text = "Displacement: " + user.displacement
         dateTextView.text = "Last Updated on: " + getFormattedDate(user.lastTimestamp)
 

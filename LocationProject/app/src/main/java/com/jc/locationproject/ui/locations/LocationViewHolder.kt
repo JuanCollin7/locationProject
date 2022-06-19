@@ -18,6 +18,7 @@ class LocationViewHolder(private val itemView: CardView): RecyclerView.ViewHolde
     private val displacementTextView: TextView = itemView.findViewById(R.id.displacementTextView)
     private val velocityTextView: TextView = itemView.findViewById(R.id.velocityTextView)
     private val intervalTextView: TextView = itemView.findViewById(R.id.intervalTextView)
+    private val stoppedTimeTextView: TextView = itemView.findViewById(R.id.stoppedTimeTextView)
 
     @SuppressLint("SetTextI18n")
     fun setData(location: LocationLog) {
@@ -25,12 +26,13 @@ class LocationViewHolder(private val itemView: CardView): RecyclerView.ViewHolde
         dateTextView.text = getFormattedDate(location)
         displacementTextView.text = getFormattedDouble(location.displacement ?: 0.0) + " metros"
         velocityTextView.text = getFormattedDouble(location.velocity ?: 0.0) + " m/s"
-        intervalTextView.text = getFormattedDouble((location.interval ?: 0.0) / 60) + " minutes"
+        intervalTextView.text = "Interval: ${getFormattedDouble((location.interval ?: 0.0) / 60)} minutes"
+        stoppedTimeTextView.text = "Stopped: ${getFormattedDouble((location.stoppedTime ?: 0.0) / 60)} minutes"
     }
 
     @SuppressLint("SimpleDateFormat")
     private fun getFormattedDate(location: LocationLog): String {
-        val date = Date(location.timestamp ?: 0)
+        val date = Date(location.createdOn ?: 0)
         val format = SimpleDateFormat("dd/MM/yyyy - HH:mm")
         return format.format(date)
     }

@@ -2,6 +2,7 @@ package com.jc.locationproject.ui.locations
 
 import android.app.Application
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -17,7 +18,6 @@ import java.util.concurrent.TimeUnit
 
 class LocationsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val firebaseManager = FirebaseManager(application)
     private val locationManager = LocationManager(application)
     private val workManager = WorkManager.getInstance(application)
     private var sharedPrefsManager = SharedPrefsManager(application)
@@ -29,16 +29,13 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
 
 
     init {
-//        viewModelScope.launch {
-//            locationManager.deleteAll()
-//        }
         getLocations()
         startSyncWorker()
     }
 
     private fun getLocations() {
         viewModelScope.launch {
-            _locations.postValue(locationManager.getAll())
+            _locations.postValue(locationManager.loadAllById(userId))
         }
     }
 
@@ -51,7 +48,7 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
 
         viewModelScope.launch {
             locationManager.insert(userId, location)
-            _locations.postValue(locationManager.getAll())
+            _locations.postValue(locationManager.loadAllById(userId))
         }
     }
 }

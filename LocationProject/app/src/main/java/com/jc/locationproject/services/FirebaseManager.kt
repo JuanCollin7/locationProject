@@ -1,7 +1,6 @@
 package com.jc.locationproject.services
 
 import android.content.Context
-import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -23,6 +22,7 @@ class FirebaseManager(context: Context) {
     private val userId by lazy { sharedPrefsManager.getIntValue(SharedPrefsKey.USER_ID) }
 
     fun uploadLocations(logs: List<LocationLog>) {
+        if(logs.isEmpty()) { return }
 
         val update: MutableMap<String, Any> = HashMap()
         logs.forEach {
@@ -32,8 +32,8 @@ class FirebaseManager(context: Context) {
         getUserCurrentDisplacement { userDisplacement, _ ->
             val totalDisplacement = logs.sumOf { it.displacement ?: 0.0 } + userDisplacement
 
-            logs.sortedByDescending { it.timestamp }.first()?.let {
-                update["users/${userId}/lastTimestamp"] = it.timestamp ?: 0.0
+            logs.sortedByDescending { it.updatedOn }.first()?.let {
+                update["users/${userId}/lastTimestamp"] = it.updatedOn ?: 0.0
                 update["users/${userId}/lastLat"] = it.lat ?: 0.0
                 update["users/${userId}/lastLon"] = it.lon ?: 0.0
                 update["users/${userId}/displacement"] = totalDisplacement

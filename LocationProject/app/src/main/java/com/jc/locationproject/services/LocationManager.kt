@@ -1,6 +1,5 @@
 package com.jc.locationproject.services
 
-import android.app.Application
 import android.content.Context
 import android.location.Location
 import android.util.Log
@@ -16,12 +15,12 @@ class LocationManager(context: Context) {
         return database.locationLogDao().getAll()
     }
 
-    suspend fun getAllUnsynced(): List<LocationLog> {
-        return database.locationLogDao().getAllUnsynced()
+    suspend fun getAllUnsynced(userId: Int): List<LocationLog> {
+        return database.locationLogDao().getAllUnsynced(userId)
     }
 
-    suspend fun loadAllByIds(userId: Int): List<LocationLog> {
-        return database.locationLogDao().loadAllByIds(userId)
+    suspend fun loadAllById(userId: Int): List<LocationLog> {
+        return database.locationLogDao().loadAllById(userId)
     }
 
     suspend fun loadLatestById(userId: Int): LocationLog? {
@@ -52,10 +51,12 @@ class LocationManager(context: Context) {
             location.latitude,
             location.longitude,
             timestamp,
+            timestamp,
             false,
             0.0,
             0.0,
-            0.0)
+            0.0,
+        0.0)
 
         previousLog?.let {
             newLog.displacement = getDistance(it, location)
@@ -67,9 +68,10 @@ class LocationManager(context: Context) {
     }
 
     private suspend fun updateStoppedLog(location: Location, previousLog: LocationLog) {
+        val timestamp = Calendar.getInstance().time.time
         val interval = getInterval(previousLog, location)
         val totalStoppedTime = interval + (previousLog.stoppedTime ?: 0.0)
-        database.locationLogDao().update(previousLog.uid, totalStoppedTime)
+        database.locationLogDao().update(previousLog.uid, totalStoppedTime, timestamp)
     }
 
     suspend fun updateSyncedLogs(logs: List<LocationLog>) {
@@ -92,7 +94,6 @@ class LocationManager(context: Context) {
 
     private fun shouldSaveLocation(locationLog: LocationLog, location: Location): Boolean {
         val distanceInMeters = getDistance(locationLog, location)
-
         return distanceInMeters >= MINIMUM_DISTANCE
     }
 
@@ -107,10 +108,9 @@ class LocationManager(context: Context) {
 
     // Get the interval in minutes between log and location
     private fun getInterval(locationLog: LocationLog, location: Location): Double {
-        locationLog.timestamp?.let {
+        locationLog.updatedOn?.let {
             val diff = location.time - it
-            val minutes = diff.toDouble() / 1000.0
-            return minutes
+            return diff.toDouble() / 1000.0
         }
 
         return 0.0
@@ -127,6 +127,8 @@ class LocationManager(context: Context) {
     companion object {
         // Minimum distance in meters to save new location
         internal const val MINIMUM_DISTANCE = 200.0
-        internal const val MAXIMUM_DISTANCE_TO_CONSIDER_AS_STOPPED = 50.0
+
+        // Maximum distance in meters to consider the device is stopped
+        internal const val MAXIMUM_DISTANCE_TO_CONSIDER_AS_STOPPED = 20.0
     }
 }

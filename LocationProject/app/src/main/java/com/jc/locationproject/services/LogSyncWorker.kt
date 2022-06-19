@@ -1,17 +1,22 @@
 package com.jc.locationproject.services
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.jc.locationproject.services.SharedPrefsManager.SharedPrefsKey
+import com.jc.locationproject.services.SharedPrefsManager.SharedPrefsManager
 
 class LogSyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     private val firebaseManager = FirebaseManager(context)
     private val locationManager = LocationManager(context)
+    private var sharedPrefsManager = SharedPrefsManager(context)
+
+    private val userId by lazy { sharedPrefsManager.getIntValue(SharedPrefsKey.USER_ID) }
 
     override suspend fun doWork(): Result {
-
-        val logsToSync = locationManager.getAllUnsynced()
+        val logsToSync = locationManager.getAllUnsynced(userId)
         if (logsToSync.isEmpty()) { return Result.success() }
 
         firebaseManager.uploadLocations(logsToSync)
