@@ -1,22 +1,26 @@
 package com.jc.locationproject.services
 
-import android.app.Application
+import android.content.Context
 import android.location.Location
 import android.util.Log
 import com.jc.locationproject.database.AppDatabase
 import com.jc.locationproject.database.LocationLog
 import java.util.*
 
-class LocationManager(application: Application) {
+class LocationManager(context: Context) {
 
-    private val database by lazy { AppDatabase.getDatabase(application) }
+    private val database by lazy { AppDatabase.getDatabase(context) }
 
     suspend fun getAll(): List<LocationLog> {
         return database.locationLogDao().getAll()
     }
 
-    suspend fun loadAllByIds(userId: Int): List<LocationLog> {
-        return database.locationLogDao().loadAllByIds(userId)
+    suspend fun getAllUnsynced(userId: Int): List<LocationLog> {
+        return database.locationLogDao().getAllUnsynced(userId)
+    }
+
+    suspend fun loadAllById(userId: Int): List<LocationLog> {
+        return database.locationLogDao().loadAllById(userId)
     }
 
     suspend fun loadLatestById(userId: Int): LocationLog? {
@@ -31,7 +35,9 @@ class LocationManager(application: Application) {
             return
         }
 
-        if (shouldSaveLocation(latestLocationLog, location)) {
+        if(shouldConsiderAsStopped(latestLocationLog, location)) {
+            updateStoppedLog(location, latestLocationLog)
+        } else if (shouldSaveLocation(latestLocationLog, location)) {
             insertNewLog(userId, location, latestLocationLog)
         }
     }
@@ -45,10 +51,12 @@ class LocationManager(application: Application) {
             location.latitude,
             location.longitude,
             timestamp,
+            timestamp,
             false,
             0.0,
             0.0,
-            0.0)
+            0.0,
+        0.0)
 
         previousLog?.let {
             newLog.displacement = getDistance(it, location)
@@ -57,6 +65,13 @@ class LocationManager(application: Application) {
         }
 
         database.locationLogDao().insertAll(newLog)
+    }
+
+    private suspend fun updateStoppedLog(location: Location, previousLog: LocationLog) {
+        val timestamp = Calendar.getInstance().time.time
+        val interval = getInterval(previousLog, location)
+        val totalStoppedTime = interval + (previousLog.stoppedTime ?: 0.0)
+        database.locationLogDao().update(previousLog.uid, totalStoppedTime, timestamp)
     }
 
     suspend fun updateSyncedLogs(logs: List<LocationLog>) {
@@ -72,9 +87,17 @@ class LocationManager(application: Application) {
         database.locationLogDao().deleteAll()
     }
 
+    suspend fun deleteAllSynced() {
+        return database.locationLogDao().deleteAllSynced()
+    }
+
+    private fun shouldConsiderAsStopped(locationLog: LocationLog, location: Location): Boolean {
+        val distanceInMeters = getDistance(locationLog, location)
+        return distanceInMeters <= MAXIMUM_DISTANCE_TO_CONSIDER_AS_STOPPED
+    }
+
     private fun shouldSaveLocation(locationLog: LocationLog, location: Location): Boolean {
         val distanceInMeters = getDistance(locationLog, location)
-
         return distanceInMeters >= MINIMUM_DISTANCE
     }
 
@@ -87,12 +110,11 @@ class LocationManager(application: Application) {
         return location.distanceTo(locationFromLog).toDouble()
     }
 
-    // Get the interval in seconds between log and location
+    // Get the interval in minutes between log and location
     private fun getInterval(locationLog: LocationLog, location: Location): Double {
-        locationLog.timestamp?.let {
+        locationLog.updatedOn?.let {
             val diff = location.time - it
-            val minutes = diff.toDouble() / 1000.0
-            return minutes
+            return diff.toDouble() / 1000.0
         }
 
         return 0.0
@@ -109,5 +131,8 @@ class LocationManager(application: Application) {
     companion object {
         // Minimum distance in meters to save new location
         internal const val MINIMUM_DISTANCE = 200.0
+
+        // Maximum distance in meters to consider the device is stopped
+        internal const val MAXIMUM_DISTANCE_TO_CONSIDER_AS_STOPPED = 20.0
     }
 }
