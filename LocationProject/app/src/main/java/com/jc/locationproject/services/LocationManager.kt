@@ -36,7 +36,9 @@ class LocationManager(context: Context) {
             return
         }
 
-        if (shouldSaveLocation(latestLocationLog, location)) {
+        if(shouldConsiderAsStopped(latestLocationLog, location)) {
+            updateStoppedLog(location, latestLocationLog)
+        } else if (shouldSaveLocation(latestLocationLog, location)) {
             insertNewLog(userId, location, latestLocationLog)
         }
     }
@@ -64,6 +66,12 @@ class LocationManager(context: Context) {
         database.locationLogDao().insertAll(newLog)
     }
 
+    private suspend fun updateStoppedLog(location: Location, previousLog: LocationLog) {
+        val interval = getInterval(previousLog, location)
+        val totalStoppedTime = interval + (previousLog.stoppedTime ?: 0.0)
+        database.locationLogDao().update(previousLog.uid, totalStoppedTime)
+    }
+
     suspend fun updateSyncedLogs(logs: List<LocationLog>) {
         val ids = logs.map { it.uid }
         database.locationLogDao().update(ids, true)
@@ -75,6 +83,11 @@ class LocationManager(context: Context) {
 
     suspend fun deleteAll() {
         database.locationLogDao().deleteAll()
+    }
+
+    private fun shouldConsiderAsStopped(locationLog: LocationLog, location: Location): Boolean {
+        val distanceInMeters = getDistance(locationLog, location)
+        return distanceInMeters <= MAXIMUM_DISTANCE_TO_CONSIDER_AS_STOPPED
     }
 
     private fun shouldSaveLocation(locationLog: LocationLog, location: Location): Boolean {
@@ -92,7 +105,7 @@ class LocationManager(context: Context) {
         return location.distanceTo(locationFromLog).toDouble()
     }
 
-    // Get the interval in seconds between log and location
+    // Get the interval in minutes between log and location
     private fun getInterval(locationLog: LocationLog, location: Location): Double {
         locationLog.timestamp?.let {
             val diff = location.time - it
@@ -114,5 +127,6 @@ class LocationManager(context: Context) {
     companion object {
         // Minimum distance in meters to save new location
         internal const val MINIMUM_DISTANCE = 200.0
+        internal const val MAXIMUM_DISTANCE_TO_CONSIDER_AS_STOPPED = 50.0
     }
 }
