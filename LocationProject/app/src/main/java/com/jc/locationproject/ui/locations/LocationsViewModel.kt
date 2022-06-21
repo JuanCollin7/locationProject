@@ -4,9 +4,7 @@ import android.app.Application
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.work.*
 import com.jc.locationproject.database.LocationLog
 import com.jc.locationproject.services.Workers.CleanerWorker
 import com.jc.locationproject.services.Workers.LogSyncWorker
@@ -26,7 +24,7 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val _locations = MutableLiveData<List<LocationLog>>()
     val locations: LiveData<List<LocationLog>> = _locations
-    
+
     init {
         getLocations()
         startSyncWorker()
@@ -40,8 +38,7 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     private fun startSyncWorker() {
-        val logBuilder = PeriodicWorkRequestBuilder<LogSyncWorker>(8, TimeUnit.HOURS).build()
-        workManager.enqueueUniquePeriodicWork("syncWorker", ExistingPeriodicWorkPolicy.KEEP, logBuilder)
+        LogSyncWorker.run(getApplication())
     }
 
     private fun startCleanerWorker() {
